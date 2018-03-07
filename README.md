@@ -1,7 +1,11 @@
 # classPolynomial
 definition of a class polynomial, to manipulate a polynomial of any order with overloaded operators.
 
-to use this class, just copy and paste it in your program or include it using #include"classPolynomial.cpp" after saving the file in the sirectory of your program.
+to use this class, just copy and paste it in your program or include it using 
+
+               #include"classPolynomial.cpp" 
+
+after saving the file in the sirectory of your program.
 
 to create a object pass it's degree as a parameter for example :
 
