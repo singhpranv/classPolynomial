@@ -1,5 +1,5 @@
 /*classPolynomial.cpp : Defines a class polynomial, of any degree, 
-// with overloaded operators <<,>>,+,-,*,/,==
+// with overloaded operators <<,>>,+,-,*,/,==,%
 // and a function getDergree() to get the the degree of polynomial
 // written by -Pranav Singh (www.github.com/singhpranv) 
 */
@@ -27,6 +27,7 @@ public:
 	polynomial operator - (polynomial) const;
 	polynomial operator * (polynomial) const;
 	polynomial operator / (polynomial) const;
+	polynomila operator % (polynomial) const;
 	
 	~polynomial();
 
@@ -101,27 +102,28 @@ istream & operator>>(istream& streamLoc, polynomial &polyLoc)
 
 ostream& operator << (ostream& streamLoc, polynomial& polyLoc)
 {
-	streamLoc << polyLoc.coefficents[polyLoc.degree] << "x^" << polyLoc.degree;
-	for (int i = polyLoc.degree - 1; i > 0; i--)
+	if (polyLoc.trueDegree != 0)
 	{
-		if (polyLoc.coefficents[i] == 1)
-		{
-			streamLoc << " + x^" << i;
-		}
-		else if (polyLoc.coefficents[i] != 0)
-		{
-			if(polyLoc.coefficents>0) streamLoc << " + " << polyLoc.coefficents[i] << "x^" << i;
-			else streamLoc <<" "<< polyLoc.coefficents[i] << "x^" << i;
-		}
+		if(polyLoc.coefficents[polyLoc.degree] != 1)  streamLoc << polyLoc.coefficents[polyLoc.degree];
+		streamLoc << "x^" << polyLoc.degree;
 	}
 
-	if (polyLoc.coefficents[0] != 0) cout << " + " << polyLoc.coefficents[0];
+
+	for (int i = polyLoc.trueDegree - 1; i > 0; i--)
+	{
+		if (polyLoc.coefficents[i] == 1)    	streamLoc << " +x^" << i;
+		else if (polyLoc.coefficents[i] > 0)    streamLoc << " +" << polyLoc.coefficents[i] << "x^" << i;
+		else if (polyLoc.coefficents[i] < 0)	streamLoc << " " << polyLoc.coefficents[i] << "x^" << i;
+	}
+
+	if (polyLoc.coefficents[0] != 0) cout << " +" << polyLoc.coefficents[0];
 
 	streamLoc << endl;
-    
+
+	if (polyLoc.trueDegree == 0 && polyLoc.coefficents[0] == 0) cout << "0\n";
+
 	return streamLoc;
 }
-
 
 //definition of overridden addition (+) operator
 
@@ -234,6 +236,41 @@ divide:
 
 	quotient.trueDegree = quotient.getDegree();
 	return quotient;
+}
+
+//definition of overridden remainder (%) operator
+
+polynomial polynomial::operator%(polynomial secondPoly) const
+{
+	polynomial remainder(trueDegree),tempPoly(trueDegree);
+
+	for (int i = trueDegree; i >= 0; i--)   remainder.coefficents[i] = coefficents[i];
+		
+    
+	if (trueDegree < secondPoly.trueDegree)  goto theEnd;
+
+	{
+		polynomial  quotient(trueDegree - secondPoly.trueDegree);
+
+		if (remainder == secondPoly)
+		{
+			quotient.coefficents[0] = 1;
+			goto divide;
+		}
+
+		quotient.coefficents[trueDegree - secondPoly.trueDegree] = coefficents[trueDegree] / secondPoly.coefficents[secondPoly.trueDegree];
+
+	divide:
+		tempPoly = quotient * secondPoly;
+		remainder = remainder - tempPoly;
+
+		remainder = (remainder%secondPoly);
+
+	}
+
+theEnd:
+	remainder.trueDegree = remainder.getDegree();
+	return remainder;
 }
 
 
