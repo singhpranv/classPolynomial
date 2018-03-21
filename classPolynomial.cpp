@@ -1,5 +1,5 @@
 /*classPolynomial.cpp : Defines a class polynomial, of any degree, 
-// with overloaded operators <<,>>,+,-,*,/,==,%
+// with overloaded operators <<,>>,+,-,*,/,==,%,^
 // and a function getDergree() to get the the degree of polynomial
 // written by -Pranav Singh (www.github.com/singhpranv) 
 */
@@ -27,7 +27,8 @@ public:
 	polynomial operator - (polynomial) const;
 	polynomial operator * (polynomial) const;
 	polynomial operator / (polynomial) const;
-	polynomila operator % (polynomial) const;
+	polynomial operator % (polynomial) const;
+	polynomial operator ^ (polynomial) const;
 	
 	~polynomial();
 
@@ -273,5 +274,34 @@ theEnd:
 	return remainder;
 }
 
+//definition of overridden EX-OR (^) operator
+
+polynomial polynomial::operator^(polynomial secondPoly) const
+{
+	int tempDegree;
+	if (degree > secondPoly.degree) tempDegree = degree;
+	else tempDegree = secondPoly.degree;
+
+	polynomial tempPoly(tempDegree);
+
+	for (int i = tempPoly.degree; i >= 0; i--)
+	{
+		if ((i <= degree) && (i <= secondPoly.degree))
+		{
+			tempPoly.coefficents[i] = coefficents[i] ^ secondPoly.coefficents[i];
+		}
+		else if (i <= degree && i>secondPoly.degree)
+		{
+			tempPoly.coefficents[i] = coefficents[i];
+		}
+		else
+		{
+			tempPoly.coefficents[i] = 0 ^ secondPoly.coefficents[i];
+		}
+	}
+
+	tempPoly.trueDegree = tempPoly.getDegree();
+	return tempPoly;
+}
 
 
